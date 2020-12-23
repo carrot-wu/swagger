@@ -54,8 +54,14 @@ export class SwaggerModule {
     const swaggerHtml = swaggerUi.generateHTML(document, options);
     app.use(finalPath, swaggerUi.serveFiles(document, options));
 
-    httpAdapter.get(finalPath, (req, res) => res.send(swaggerHtml));
-    httpAdapter.get(finalPath + '-json', (req, res) => res.json(document));
+    httpAdapter.get(finalPath, (req, res) => {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(swaggerHtml);
+    });
+    httpAdapter.get(finalPath + '-json', (req, res) => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(document);
+    });
   }
 
   private static setupFastify(
